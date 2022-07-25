@@ -53,7 +53,7 @@ case "$1" in
 	status_of_proc -p $PIDFILE $DAEMON $NAME && exit 0 || exit $?
 	;;
   *)
-	echo "Usage: door_lockd.sh [start|stop|restart|status]" >&2
+	echo "Usage: door_lockd [start|stop|restart|status]" >&2
 	exit 3
 	;;
 esac
