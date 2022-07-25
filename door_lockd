@@ -1,0 +1,61 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          door_lock.pl
+# Required-Start:    $local_fs $network $remote_fs $named $time
+# Required-Stop:     $local_fs $network $remote_fs $named
+# Should-Start:
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Launch door unlock/lock script
+# Description:       Perl Script sends out randomized lock/unlock commands
+#					 over UDP datagrams
+### END INIT INFO
+
+PATH='/usr/local/bin:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin'
+PIDFILE='/run/door_lockd.pid'
+DAEMON='/usr/local/sbin/door_control.pl'
+NAME='door_lockd'
+umask 0022
+
+. /lib/init/vars.sh
+. /lib/lsb/init-functions
+
+case "$1" in
+  start)
+	log_daemon_msg "Starting Door Control daemon" "$NAME" || true
+	if start-stop-daemon --start --background --chuid 0:0 -m --pidfile $PIDFILE --exec $DAEMON; then
+		log_end_msg 0 || true
+	else
+		log_end_msg 1 || true
+	fi
+	;;
+
+  restart)
+	log_daemon_msg "Restarting Door Control daemon" "$NAME" || true
+	start-stop-daemon --stop --quiet --oknodo --retry TERM/3/KILL/5 --remove-pidfile --pidfile $PIDFILE
+	if start-stop-daemon --start --background --chuid 0:0 -m --pidfile $PIDFILE --exec $DAEMON; then
+ 		log_end_msg 0 || true
+	else
+		log_end_msg 1 || true
+	fi
+	;;
+
+  stop)
+	log_daemon_msg "Stopping Door Control daemon" "$NAME" || true
+	if start-stop-daemon --stop --quiet --oknodo --retry TERM/3/KILL/5 --remove-pidfile --pidfile $PIDFILE ; then
+		log_end_msg 0 || true
+	else
+		log_end_msg 1 || true
+	fi
+	;;
+
+  status)
+	status_of_proc -p $PIDFILE $DAEMON $NAME && exit 0 || exit $?
+	;;
+  *)
+	echo "Usage: door_lockd.sh [start|stop|restart|status]" >&2
+	exit 3
+	;;
+esac
+
+exit 0
