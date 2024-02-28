@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/sh
 ### BEGIN INIT INFO
 # Provides:          door_lock.pl
 # Required-Start:    $local_fs $network $remote_fs $named $time
@@ -11,7 +11,7 @@
 #					 over UDP datagrams
 ### END INIT INFO
 
-PATH='/usr/local/bin:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin'
+PATH='/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin'
 PIDFILE='/run/door_lockd.pid'
 DAEMON='/usr/local/sbin/door_control.pl'
 NAME='door_lockd'
